@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 
+
 # HW6
 # Author: Cinthya Nguyen
 # Class: CS540 SP23
@@ -21,7 +22,7 @@ def get_data_loader(training=True):
     custom_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
-        ])
+    ])
 
     if training:
         train_set = datasets.FashionMNIST('./ data', train=True, download=True,
@@ -67,7 +68,6 @@ def train_model(model, train_loader, criterion, T):
     opt = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     model.train()
 
-    batch_size = 64
     for epoch in range(T):
         avg_loss = 0.0
         correct = 0
@@ -80,18 +80,17 @@ def train_model(model, train_loader, criterion, T):
             loss.backward()
             opt.step()
 
+            batch_size = labels.size(0)
+
             _, predicted = torch.max(outputs.data, 1)
             correct += (predicted == labels).sum().item()
-            total += labels.size(0)
+            total += batch_size
 
-            if i % 60000 == 32:  # last batch
-                avg_loss += loss.item() * 32
-            else:
-                avg_loss += loss.item() * batch_size
+            avg_loss += loss.item() * batch_size
 
         print(f'Train Epoch: {epoch} Accuracy: {correct}/{total}('
-              f'{100 * (correct/total):.2f}%) '
-              f'Loss: {avg_loss/total:.3f}')
+              f'{100 * (correct / total):.2f}%) '
+              f'Loss: {avg_loss / total:.3f}')
 
 
 def evaluate_model(model, test_loader, criterion, show_loss=True):
@@ -107,24 +106,26 @@ def evaluate_model(model, test_loader, criterion, show_loss=True):
 
     model.eval()
 
-    avg_loss = 0
+    total_loss = 0
     correct = 0
     total = 0
-
     with torch.no_grad():
         for data, labels in test_loader:
             outputs = model(data)
+
+            batch_size = labels.size(0)
+
             _, predicted = torch.max(outputs.data, 1)
             correct += (predicted == labels).sum().item()
-            total += labels.size(0)
+            total += batch_size
 
             loss = criterion(outputs, labels)
-            avg_loss += loss
+            total_loss += loss * batch_size
 
         if show_loss:
-            print(f'Average loss: {avg_loss/len(test_loader):.4f}')
+            print(f'Average loss: {total_loss / total:.4f}')
 
-        print(f'Accuracy: {100 * (correct/total)}%')
+        print(f'Accuracy: {100 * (correct / total):.2f}%')
 
     # model.train()
 
@@ -160,13 +161,13 @@ if __name__ == '__main__':
     Main.
     """
     criterion = nn.CrossEntropyLoss()
-    train_loader = get_data_loader()
+    # train_loader = get_data_loader()
     # print(type(train_loader))
     # print(train_loader.dataset)
-    test_loader = get_data_loader(training=False)
-    model = build_model()
+    # test_loader = get_data_loader(training=False)
+    # model = build_model()
     # print(model)
-    train_model(model, train_loader, criterion, 5)
-    evaluate_model(model, test_loader, criterion, False)
-    test_images, test_labels = next(iter(test_loader))
-    predict_label(model, test_images, 1)
+    # train_model(model, train_loader, criterion, 1)
+    # evaluate_model(model, test_loader, criterion, True)
+    # test_images, test_labels = next(iter(test_loader))
+    # predict_label(model, test_images, 1)
