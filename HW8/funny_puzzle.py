@@ -8,7 +8,6 @@ Author: Cinthya Nguyen
 Class: CS540 SP23
 """
 
-
 def get_manhattan_distance(from_state, to_state=[1, 2, 3, 4, 5, 6, 7, 0, 0]):
     """
         INPUT:
@@ -185,12 +184,4 @@ def solve(state, goal_state=[1, 2, 3, 4, 5, 6, 7, 0, 0]):
 
 
 if __name__ == "__main__":
-    # print_succ([2, 5, 1, 4, 0, 6, 7, 0, 3])
-    # print()
-    #
-    # print(get_manhattan_distance([2, 5, 1, 4, 0, 6, 7, 0, 3], [1, 2, 3, 4, 5, 6, 7, 0, 0]))
-    # print()
-    #
-    # solve([2, 5, 1, 4, 0, 6, 7, 0, 3])
-    # print()
     pass
